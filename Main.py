@@ -1,6 +1,7 @@
 #App.py - main flask application for D-Money's Shoe World
 from flask import Flask, Request, jsonify
 from functools import wraps
+from db_manager import DatabaseManager
 
 import jwt
 import datetime
@@ -8,7 +9,13 @@ import json
 from config import Config
 
 app = Flask(__name__)
-db = Database()
+app.config.from_object(Config)
+db = DatabaseManager()
+
+# Initilize the database
+db.init_db()
+
+@app.route
 
 @app.route('/shoes', methods=['Get'])
 def get_shoes():
