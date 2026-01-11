@@ -98,3 +98,32 @@ def get_user_by_id(self, user_id):
 #Function to Authenticate the user and return data
 def authenticate_user(self, username, password):
     from models.user import User
+
+    conn = self.get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute('SELECT * FROM users WHERE username = ?', (username,))
+    row = cursor.fetchone()
+    conn.close()
+
+    if row:
+        user = User.from_dict(dict(row))
+        if user.verify_password(password):
+            return user
+        
+        if user.verify_password(password):
+            return user
+        
+    return None
+
+
+### Product Operations ###
+
+def add_product(self, product):
+    """Add a new product to the inventory"""
+    conn = self.get_connection()
+    cursor = conn.cursor()
+
+#serialize attributes dictionary to JSON string
+    if hasattr(shoe, 'sport_type'):
+        attributes = json.dumps({'sport_type': shoe.sport_type})
