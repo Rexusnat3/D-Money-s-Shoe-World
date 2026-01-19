@@ -47,21 +47,21 @@ class DatabaseManager:
                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                        )
                        ''')
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS orders(
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                user_id INTEGER NOT NULL,
-                total REAL NOT NULL,
-                status TEXT NOT NULL,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                FOREIGN KEY(user_id) REFERENCES users(id)
-                )
-            ''')
-        
-conn.commit()
-conn.close
+cursor.execute('''
+    CREATE TABLE IF NOT EXISTS orders(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        total REAL NOT NULL,
+        status TEXT NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY(user_id) REFERENCES users(id)
+        )
+    ''')
 
-### USER TABLES ###
+conn.commit()
+conn.close()
+
+### USER Operations ###
 
 """Function to create a new user"""
 def create_user(self, user):
