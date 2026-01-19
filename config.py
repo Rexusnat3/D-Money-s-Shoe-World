@@ -1,4 +1,6 @@
 import os
+
 class Config:
-    SECRET_KEY = os.inviron.get('SECRET_KEY')
+    SECRET_KEY = os.environ.get('SECRET_KEY') or 'dev-secret-key-change-in-production'
     DATABASE_NAME = 'shoe_store_inventory.db'
+    DEBUG = os.environ.get('DEBUG', 'False').lower() == 'true'
