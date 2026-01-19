@@ -86,3 +86,106 @@ def register():
         }), 201
     else:
         return jsonify({'message': 'Username already exists'}), 400
+    
+@app.route('/api/login', methods=['POST'])
+def login():
+    """Authenticate user and return token"""
+    data = request.get_json()
+    if not data or not data.get('username') or not data.get('password'):
+        return jsonify({'message':'Username and Password required'}), 400
+
+    user_data = db.authenticate_user(data['username'], data['password'])
+
+    if user_data:
+        token = jwt.encode({
+            'user_id': user_data['id'],
+            'username': user_data['username'],
+            'role': user_data['role'],
+            'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=24)
+        }, app.config['SECRET_KEY'], algorithm="HS256")
+
+        return jsonify({
+            'message': 'Login successful!',
+            'token': token,
+            'user': {
+                'id': user_data['id'],
+                'username': user_data['username'],
+                'role': user_data['role']
+            }
+        }), 200
+    else:
+        return jsonify({'message': 'Invalid credentials!'}), 401       
+
+
+
+
+@app.route('/shoes', methods=['GET'])
+def get_shoes():
+    """Get all the shoes in inventory"""
+    shoes = db.get_all_shoes()
+    return jsonify([shoe.to_dict() for shoe in shoes])
+
+@app.route('/api/shoes', methods=['POST'])
+@app.route('/shoes', methods=['POST'])
+@token_required
+@admin_required
+def create_shoe(current_user):
+    """add a new Shoe type to the inventory (Admin only)"""
+    from models.product import Shoe, AthleticShoe, CasualShoe, FormalShoe
+    
+    data = request.get_json()
+
+    if not data or not data.get('name') or not data.get('price'):
+        return jsonify({'message': 'Name and price are required'}), 400
+
+    try:
+        shoe_type = data.get('category', 'casual')
+        
+        # Create appropriate shoe type based on category
+        if shoe_type == 'athletic':
+            shoe = AthleticShoe(
+                name=data['name'],
+                brand=data.get('brand', 'Unknown'),
+                price=float(data['price']),
+                size=data.get('size', '10'),
+                stock=int(data.get('stock', 0)),
+                color=data.get('color', 'Black'),
+                sport_type=data.get('sport_type', 'general')
+            )
+        elif shoe_type == 'formal':
+            shoe = FormalShoe(
+                name=data['name'],
+                brand=data.get('brand', 'Unknown'),
+                price=float(data['price']),
+                size=data.get('size', '10'),
+                stock=int(data.get('stock', 0)),
+                color=data.get('color', 'Black'),
+                material=data.get('material', 'leather')
+            )
+        else:
+            shoe = CasualShoe(
+                name=data['name'],
+                brand=data.get('brand', 'Unknown'),
+                price=float(data['price']),
+                size=data.get('size', '10'),
+                stock=int(data.get('stock', 0)),
+                color=data.get('color', 'Black'),
+                style=data.get('style', 'sneaker')
+            )
+        
+        shoe_id = db.add_product(shoe)
+        
+        if shoe_id:
+            return jsonify({
+                'message': 'Shoe added successfully!',
+                'shoe_id': shoe_id
+            }), 201
+        else:
+            return jsonify({'message': 'Failed to add shoe'}), 500
+            
+    except (ValueError, KeyError) as e:
+        return jsonify({'message': f'Invalid data: {str(e)}'}), 400
+
+
+if __name__ == '__main__':
+    app.run(debug=True, host='0.0.0.0', port=5000)
