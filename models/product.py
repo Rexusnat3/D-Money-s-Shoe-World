@@ -3,8 +3,6 @@
 from datetime import datetime
 import json
 
-from matplotlib import category
-
 class Product:
     """base class for all products"""
     def __init__(self, name, brand, price, stock=0, product_id=None):

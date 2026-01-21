@@ -15,7 +15,8 @@ CORS(app) #Enable CORS for all routes
 db=DatabaseManager()
 
 #initialize the database
-db.initialize_database()
+db.init_db()
+
 
 ### Frontend Routes ###
 @app.route('/')
