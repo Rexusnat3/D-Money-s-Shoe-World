@@ -5,7 +5,7 @@ Contains all entity classes for the application
 
 from .user import User, Admin, Customer
 from .product import Product, Shoe, AthleticShoe, CasualShoe, FormalShoe
-from .order import Order, OrderItem
+from .order import 
 from .cart import Cart
 
 __all__ = [
