@@ -182,6 +182,196 @@ class Shoe(Product):
             image=data.get('image')
         )
         return shoe
+    
+    def __repr__(self):
+        return f"Shoe(id={self._id}, name='{self._name}', size={self._size}, color='{self._color}')"
+
+class AthleticShoe(Shoe):
+    """Athletic Shoe class - specialized shoe type"""
+    
+    def __init__(self, name, brand, price, size, stock=0, color='Black', 
+                 sport_type='running', product_id=None, image=None):
+        """Initialize athletic shoe with sport type"""
+        super().__init__(name, brand, price, size, stock, color, 'athletic', product_id, image)
+        self._sport_type = sport_type
+    
+    @property
+    def sport_type(self):
+        return self._sport_type
+    
+    def get_display_info(self):
+        """Override to add sport-specific information"""
+        info = super().get_display_info()
+        info.update({
+            'sport_type': self._sport_type,
+            'category': 'athletic',
+            'features': ['High Performance', 'Breathable', 'Durable']
+        })
+        return info
+    
+    def calculate_discount(self, percentage):
+        """Athletic shoes get additional 5% discount"""
+        base_discount = super().calculate_discount(percentage)
+        return base_discount * 0.95
+    
+    def get_attributes(self):
+        """Override to include sport type"""
+        attrs = super().get_attributes()
+        attrs['sport_type'] = self._sport_type
+        return attrs
+    
+    def to_dict(self):
+        """Override to include athletic-specific fields"""
+        data = super().to_dict()
+        data['attributes'] = json.dumps(self.get_attributes())
+        return data
+    
+    @classmethod
+    def from_dict(cls, data):
+        """Create AthleticShoe from dictionary"""
+        attributes = data.get('attributes', {})
+        if isinstance(attributes, str):
+            attributes = json.loads(attributes)
+        
+        shoe = cls(
+            name=data.get('name'),
+            brand=data.get('brand'),
+            price=data.get('price'),
+            size=data.get('size', attributes.get('size', '10')),
+            stock=data.get('stock', 0),
+            color=data.get('color', attributes.get('color', 'Black')),
+            sport_type=attributes.get('sport_type', 'running'),
+            product_id=data.get('id')
+        )
+        return shoe
+    
+    def __repr__(self):
+        return f"AthleticShoe(name='{self._name}', sport_type='{self._sport_type}', size={self._size})"
+
+
+class CasualShoe(Shoe):
+    """Casual Shoe class - specialized shoe type"""
+    
+    def __init__(self, name, brand, price, size, stock=0, color='Black', 
+                 style='sneaker', product_id=None, image=None):
+        """Initialize casual shoe with style"""
+        super().__init__(name, brand, price, size, stock, color, 'casual', product_id, image)
+        self._style = style
+    
+    @property
+    def style(self):
+        return self._style
+    
+    def get_display_info(self):
+        """Override to add casual shoe information"""
+        info = super().get_display_info()
+        info.update({
+            'style': self._style,
+            'category': 'casual',
+            'features': ['Comfortable', 'Versatile', 'Everyday Wear']
+        })
+        return info
+    
+    def calculate_discount(self, percentage):
+        """Casual shoes standard discount"""
+        return super().calculate_discount(percentage)
+    
+    def get_attributes(self):
+        """Override to include style"""
+        attrs = super().get_attributes()
+        attrs['style'] = self._style
+        return attrs
+    
+    def to_dict(self):
+        """Override to include casual-specific fields"""
+        data = super().to_dict()
+        data['attributes'] = json.dumps(self.get_attributes())
+        return data
+    
+    @classmethod
+    def from_dict(cls, data):
+        """Create CasualShoe from dictionary"""
+        attributes = data.get('attributes', {})
+        if isinstance(attributes, str):
+            attributes = json.loads(attributes)
+        
+        shoe = cls(
+            name=data.get('name'),
+            brand=data.get('brand'),
+            price=data.get('price'),
+            size=data.get('size', attributes.get('size', '10')),
+            stock=data.get('stock', 0),
+            color=data.get('color', attributes.get('color', 'Black')),
+            style=attributes.get('style', 'sneaker'),
+            product_id=data.get('id')
+        )
+        return shoe
+    
+    def __repr__(self):
+        return f"CasualShoe(name='{self._name}', style='{self._style}', size={self._size})"
+
+
+class FormalShoe(Shoe):
+    """Formal Shoe class - specialized shoe type"""
+    
+    def __init__(self, name, brand, price, size, stock=0, color='Black', 
+                 material='leather', product_id=None, image=None):
+        """Initialize formal shoe with material"""
+        super().__init__(name, brand, price, size, stock, color, 'formal', product_id, image)
+        self._material = material
+    
+    @property
+    def material(self):
+        return self._material
+    
+    def get_display_info(self):
+        """Override to add formal shoe information"""
+        info = super().get_display_info()
+        info.update({
+            'material': self._material,
+            'category': 'formal',
+            'features': ['Premium Quality', 'Professional Look', 'Classic Design']
+        })
+        return info
+    
+    def calculate_discount(self, percentage):
+        """Formal shoes have limited discount (max 10%)"""
+        max_discount = min(percentage, 10)
+        return super().calculate_discount(max_discount)
+    
+    def get_attributes(self):
+        """Override to include material"""
+        attrs = super().get_attributes()
+        attrs['material'] = self._material
+        return attrs
+    
+    def to_dict(self):
+        """Override to include formal-specific fields"""
+        data = super().to_dict()
+        data['attributes'] = json.dumps(self.get_attributes())
+        return data
+    
+    @classmethod
+    def from_dict(cls, data):
+        """Create FormalShoe from dictionary"""
+        attributes = data.get('attributes', {})
+        if isinstance(attributes, str):
+            attributes = json.loads(attributes)
+        
+        shoe = cls(
+            name=data.get('name'),
+            brand=data.get('brand'),
+            price=data.get('price'),
+            size=data.get('size', attributes.get('size', '10')),
+            stock=data.get('stock', 0),
+            color=data.get('color', attributes.get('color', 'Black')),
+            material=attributes.get('material', 'leather'),
+            product_id=data.get('id')
+        )
+        return shoe
+    
+    def __repr__(self):
+        return f"FormalShoe(name='{self._name}', material='{self._material}', size={self._size})"
 
     
 
