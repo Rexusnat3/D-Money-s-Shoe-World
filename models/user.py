@@ -10,11 +10,11 @@ class User:
 
     def __init__(self, username, password, email=None, user_id=None, role='customer'):
         self.user_id = user_id
-        self.username = username
-        self.password_hash = self._hash_password(password)
-        self.email = email
-        self.role = role
-        self.created_at = datetime.now()
+        self._username = username
+        self._password_hash = self._hash_password(password)
+        self._email = email
+        self._role = role
+        self._created_at = datetime.now()
     
     #Proprties for encapsulation
 
@@ -99,7 +99,7 @@ class User:
     
     def __repr__(self):
         """string representation of the User object"""
-        return f"User(id={self._id}, username='{self._username}', role='{self._role}')"
+        return f"User(id={self.user_id}, username='{self._username}', role='{self._role}')"
 
 class Admin(User):
     """Admin class inheriting from User,
@@ -242,5 +242,5 @@ class Customer(User):
     
     def __repr__(self):
         """String representation of Customer"""
-        return f"Customer(id={self._id}, username='{self._username}', points={self._loyalty_points})"
+        return f"Customer(id={self.user_id}, username='{self._username}', points={self._loyalty_points})"
 

@@ -17,6 +17,38 @@ db=DatabaseManager()
 #initialize the database
 db.init_db()
 
+def seed_products():
+    """Seed initial products if none exist to help demo the app."""
+    try:
+        conn = db.get_connection()
+        cur = conn.cursor()
+        cur.execute('SELECT COUNT(*) AS cnt FROM products')
+        row = cur.fetchone()
+        count = row[0] if row else 0
+        conn.close()
+    except Exception:
+        count = 0
+
+    if count and count > 0:
+        return
+
+    from models.product import AthleticShoe, CasualShoe, FormalShoe
+
+    samples = [
+        AthleticShoe(name='Air Runner', brand='Nike', price=129.99, size='10', stock=15, color='Black/White', sport_type='running', image='https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600'),
+        AthleticShoe(name='Ultra Boost', brand='Adidas', price=159.99, size='10', stock=10, color='Grey', sport_type='running', image='https://images.unsplash.com/photo-1600180758890-6b94519a8ba6?w=600'),
+        CasualShoe(name='Everyday Sneaker', brand='Vans', price=69.99, size='10', stock=25, color='Navy', style='sneaker', image='https://images.unsplash.com/photo-1519741497674-611481863552?w=600'),
+        CasualShoe(name='Street Low', brand='Converse', price=59.99, size='10', stock=30, color='White', style='sneaker', image='https://images.unsplash.com/photo-1542293787938-c9e299b88054?w=600'),
+        FormalShoe(name='Oxford Classic', brand='Clarks', price=119.99, size='10', stock=12, color='Brown', material='leather', image='https://images.unsplash.com/photo-1520975916090-3105956dac38?w=600'),
+        FormalShoe(name='Derby Prime', brand='Cole Haan', price=139.99, size='10', stock=8, color='Black', material='leather', image='https://images.unsplash.com/photo-1544441892-1f2b1c2a3d10?w=600'),
+    ]
+
+    for s in samples:
+        db.add_product(s)
+
+# Seed once on startup
+seed_products()
+
 
 ### Frontend Routes ###
 @app.route('/')
@@ -26,8 +58,8 @@ def index():
 
 @app.route('/static/<path:filename>')
 def static_files(filename):
-    """Serve static files."""
-    return send_from_directory('static', filename)
+    """Serve static files without hardcoded paths."""
+    return send_from_directory(app.static_folder, filename)
 
 #authentication decorator
 def token_required(f):

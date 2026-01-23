@@ -30,9 +30,8 @@
 
 1. **Clone the repository**
 ```bash
-cd Desktop/D
 git clone <repository-url>
-cd D-Money-s-Shoe-World
+cd D-Money-s-Shoe-World 2
 ```
 
 2. **Install dependencies**
